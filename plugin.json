@@ -1,0 +1,44 @@
+{
+    "name": "terraform-cicd",
+    "version": "0.1.0",
+    "description": "Devbox plugin for Terraform with integrated linting, security scanning, and documentation generation.",
+    "packages": [
+        "trivy@latest",
+        "terraform-docs@latest",
+        "tflint@latest"
+    ],
+    "env": {},
+    "create_files": {
+        "{{ .Virtenv }}/functions.sh": "config/scripts/functions.sh",
+        "{{ .Virtenv }}/plan-and-apply.sh": "config/scripts/plan-and-apply.sh",
+        "{{ .Virtenv }}/plan.sh": "config/scripts/plan.sh",
+        "{{ .Virtenv }}/apply.sh": "config/scripts/apply.sh",
+        "{{ .Virtenv }}/check.sh": "config/scripts/check.sh",
+        "{{ .Virtenv }}/test.sh": "config/scripts/test.sh",
+        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl"
+    },
+    "shell": {
+        "init_hook": [
+            "echo 'Welcome to devbox plugin terraform-cicd!'",
+            "chmod +x $DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/*.sh"
+        ],
+        "scripts": {
+            "plan-and-apply": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/plan-and-apply.sh \"$@\""
+            ],
+            "plan": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/plan.sh \"$@\""
+            ],
+            "apply": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/apply.sh \"$@\""
+            ],
+            "check": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/check.sh \"$@\""
+            ],
+            "test": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/test.sh \"$@\""
+            ]
+        }
+    },
+    "include": []
+}
