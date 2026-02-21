@@ -19,7 +19,7 @@
     },
     "shell": {
         "init_hook": [
-            "echo 'Welcome to devbox plugin terraform-cicd!' > /dev/null",
+            "echo 'Welcome to devbox plugin terraform-cicd!'",
             "chmod +x $DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/*.sh"
         ],
         "scripts": {
