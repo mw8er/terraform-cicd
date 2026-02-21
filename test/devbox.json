@@ -8,9 +8,7 @@
     "path:../plugin.json"
   ],
   "shell": {
-    "init_hook": [
-      "echo 'Welcome to plugin devbox-terraform!' > /dev/null"
-    ],
+    "init_hook": [],
     "scripts": {
     }
   }

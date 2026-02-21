@@ -102,7 +102,7 @@ apply () {
 
         terraform_apply
     else
-        echo "No tfplan file found. Please run 'devbox run plan'  first."
+        echo "No tfplan file found. Please run 'devbox run plan' first."
         exit 1
     fi
 

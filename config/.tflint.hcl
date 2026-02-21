@@ -14,7 +14,7 @@ config {
   }
 
   varfile = []
-  variables = ["foo=bar", "bar=[\"baz\"]"]
+  variables = []
 }
 
 plugin "azurerm" {
