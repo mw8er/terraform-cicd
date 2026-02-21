@@ -47,22 +47,41 @@ check_tfplan () {
 }
 
 check_terraform () {
+    EXIT_CODE=0
+
     echo "Check format..."
-    terraform fmt -check -recursive -no-color
+    if ! terraform fmt -check -recursive -no-color; then
+        echo "terraform fmt failed."
+        EXIT_CODE=1
+    fi
 
     echo "Check terraform files with trivy..."
-    trivy fs --skip-version-check --scanners misconfig,secret -f json -o source.json .
+    if ! trivy fs --skip-version-check --scanners misconfig,secret -f json -o source.json .; then
+        echo "trivy scan of terraform files failed."
+        EXIT_CODE=1
+    fi
 
     echo "Check terraform files with tflint..."
-    tflint --init
-    tflint --recursive --format json --config "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl"
+    if ! tflint --init; then
+        echo "tflint --init failed."
+        EXIT_CODE=1
+    fi
+    if ! tflint --recursive --format json --config "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl"; then
+        echo "tflint scan of terraform files failed."
+        EXIT_CODE=1
+    fi
 
     if [ -f README.md ]; then
         echo "Running terraform-docs..."
-        terraform-docs markdown table --output-file README.md --output-mode inject .
+        if ! terraform-docs markdown table --output-file README.md --output-mode inject .; then
+            echo "terraform-docs failed."
+            EXIT_CODE=1
+        fi
     else
         echo "README.md does not exist, skipping terraform-docs."
     fi
+
+    return $EXIT_CODE
 }
 
 check () {
