@@ -33,22 +33,31 @@ jobs:
             echo "Expected error message not found in output."
             exit 1
           fi
+        env:
+          WORKDIR: changes
 
       - name: verify plan with changes
         run: devbox run --env-file $WORKDIR/config/.env plan
+        env:
+          WORKDIR: changes
       
       - name: verify apply with changes
         run: devbox run --env-file $WORKDIR/config/.env apply
+        env:
+          WORKDIR: changes
       
       - name: verify plan-and-apply with changes
         run: devbox run --env-file $WORKDIR/config/.env plan-and-apply
         env:
+          WORKDIR: changes
           AUTO_APPROVE: true
 
       - name: verify plan without changes
         run: devbox run --env-file $WORKDIR/config/.env plan
+        env:
+          WORKDIR: nochanges
 
-      - name: verify apply with without changes
+      - name: verify apply without changes
         run: |
           set +e
           devbox run --env-file $WORKDIR/config/.env apply 2>&1 | tee error.log
@@ -57,21 +66,26 @@ jobs:
             echo "No tfplan file found. Please run 'devbox run plan' first."
             exit 1
           fi
+        env:
+          WORKDIR: nochanges
 
       - name: verify plan-and-apply without changes
         run: devbox run --env-file $WORKDIR/config/.env plan-and-apply
         env:
+          WORKDIR: nochanges
           AUTO_APPROVE: true
 
       - name: verify plan/apply/plan-and-apply without config
         run: |
           set +e
-          devbox run plan noconfig config/.env 2>&1 | tee error.log
+          devbox run --env-file noconfig/config/.env plan 2>&1 | tee error.log
           set -e
           if ! grep -q "Error: open noconfig/config/.env: no such file or directory" error.log; then
             echo "Expected error message not found in output."
             exit 1
           fi
+        env:
+          WORKDIR: noconfig
 
       - name: verify plan without terraform config
         run: |
@@ -82,6 +96,8 @@ jobs:
             echo "Expected error message not found in output."
             exit 1
           fi
+        env:
+          WORKDIR: noterraform
 
       - name: verify plan-and-apply without terraform config
         run: |
@@ -93,5 +109,6 @@ jobs:
             exit 1
           fi
         env:
+          WORKDIR: noterraform
           AUTO_APPROVE: true
 
