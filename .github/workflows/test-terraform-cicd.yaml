@@ -6,6 +6,11 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'plugin.json'
+      - 'config/**'
+      - 'test/**'
+      - '.github/workflows/test-terraform-cicd.yaml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
