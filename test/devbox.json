@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.16.0/.schema/devbox.schema.json",
+  "packages": [
+    "terraform@1.14.4",
+    "jq@latest"
+  ],
+  "include": [
+    "path:../plugin.json"
+  ],
+  "shell": {
+    "init_hook": [
+      "echo 'Welcome to plugin devbox-terraform!' > /dev/null"
+    ],
+    "scripts": {
+    }
+  }
+}

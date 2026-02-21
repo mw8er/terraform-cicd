@@ -35,3 +35,17 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# ----------------------------------
+
+
+# ----------------------------------
+
+# Ignore Devbox environment files
+test/.devbox
+test/*/.terraform.lock.hcl
+test/*/foo.bar
+test/*/plan.json
+test/*/tfplan
+test/*/tfplan.txt
+test/*/tfplan.json
