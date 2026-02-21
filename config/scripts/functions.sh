@@ -40,7 +40,8 @@ terraform-apply () {
 check-tfplan () {
     if [ -f tfplan ]; then
         echo "Check plan with trivy..."
-        trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-plan.json tfplan
+        trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-plan-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
+        trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-plan-critical-high.json --exit-code 1 --severity HIGH,CRITICAL .
     else
         echo "No tfplan file found."
     fi
