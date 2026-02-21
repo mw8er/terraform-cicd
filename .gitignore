@@ -49,3 +49,6 @@ test/*/plan.json
 test/*/tfplan
 test/*/tfplan.txt
 test/*/tfplan.json
+test/*/trivy-*.json
+test/*/tflint.json
+test/*/source.json
