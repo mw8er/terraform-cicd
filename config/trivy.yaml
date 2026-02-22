@@ -1,0 +1,29 @@
+misconfiguration:
+  # Same as '--checks-bundle-repository'
+  checks-bundle-repository: "mirror.gcr.io/aquasec/trivy-checks:1"
+
+  # Same as '--config-file-schemas'
+  config-file-schemas: []
+
+  # Same as '--include-non-failures'
+  include-non-failures: false
+
+  # Same as '--raw-config-scanners'
+  raw-config-scanners: []
+
+  # Same as '--render-cause'
+  render-cause: []
+
+  # Same as '--misconfig-scanners'
+  scanners:
+   - azure-arm
+   - terraform
+   - terraformplan-json
+   - terraformplan-snapshot
+
+  terraform:
+    # Same as '--tf-exclude-downloaded-modules'
+    exclude-downloaded-modules: false
+
+    # Same as '--tf-vars'
+    vars: []

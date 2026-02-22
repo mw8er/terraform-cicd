@@ -13,9 +13,10 @@
         "{{ .Virtenv }}/plan-and-apply.sh": "config/scripts/plan-and-apply.sh",
         "{{ .Virtenv }}/plan.sh": "config/scripts/plan.sh",
         "{{ .Virtenv }}/apply.sh": "config/scripts/apply.sh",
-        "{{ .Virtenv }}/check.sh": "config/scripts/check.sh",
+        "{{ .Virtenv }}/check-quality.sh": "config/scripts/check-quality.sh",
         "{{ .Virtenv }}/test.sh": "config/scripts/test.sh",
-        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl"
+        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl",
+        "{{ .Virtenv }}/trivy.yaml": "config/trivy.yaml"
     },
     "shell": {
         "init_hook": [
@@ -32,8 +33,8 @@
             "apply": [
                 "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/apply.sh \"$@\""
             ],
-            "check": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/check.sh \"$@\""
+            "check-quality": [
+                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/check-quality.sh \"$@\""
             ],
             "test": [
                 "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/test.sh \"$@\""
