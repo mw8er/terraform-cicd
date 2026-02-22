@@ -6,17 +6,17 @@ TFLINT_CONFIG_FILE=${TFLINT_CONFIG_FILE:-$DEVBOX_PROJECT_ROOT/.devbox/virtenv/te
 terraform-init () {
     terraform --version
 
-    terraform init -input=false -no-color
+    terraform init
 
     terraform workspace select -or-create=true ${WORKSPACE:-default} 
 }
 
 terraform-plan () {
     echo "Running terraform validate..."
-    terraform validate -no-color
+    terraform validate
 
     set +e
-    terraform plan --detailed-exitcode -no-color -input=false -out tfplan
+    terraform plan --detailed-exitcode -out tfplan
     EXIT_CODE=$?
     set -e
     if [ $EXIT_CODE -eq 0 ]; then
@@ -35,7 +35,7 @@ terraform-plan () {
 }
 
 terraform-apply () {
-    terraform apply -input=false -no-color tfplan
+    terraform apply tfplan
     [ -f tfplan ] && rm tfplan
     [ -f tfplan.json ] && rm tfplan.json
     [ -f tfplan.txt ] && rm tfplan.txt
@@ -54,10 +54,10 @@ check-tfplan () {
 
 check-terraform () {
     echo "Running terraform validate..."
-    terraform validate -no-color
+    terraform validate
 
     echo "Check format..."
-    terraform fmt -check -recursive -no-color
+    terraform fmt -check -recursive
 
     echo "Check terraform files with trivy..."
     trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
@@ -66,7 +66,7 @@ check-terraform () {
     echo "Initializing tflint..."
     tflint --init --config $TFLINT_CONFIG_FILE
     echo "Check terraform files with tflint..."
-    tflint --recursive --no-color --format json --config $TFLINT_CONFIG_FILE > tflint.json 
+    tflint --recursive --format json --config $TFLINT_CONFIG_FILE > tflint.json 
     echo ""
 
     if [ -f README.md ]; then
@@ -155,9 +155,9 @@ test () {
 
     terraform-init
 
-    terraform validate -no-color
+    terraform validate
 
-    terraform test -no-color
+    terraform test
 
     popd || { echo "Failed to change directory back from '$WORKDIR'."; exit 1; }
 }
