@@ -25,12 +25,20 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Install nix
+        uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a  # v21
+        with:
+          logger: pretty
+          extra-conf: experimental-features = ca-derivations fetch-closure
+          summarize: false
+
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
         with:
           project-path: test
           enable-cache: true
           devbox-version: 0.16.0
+          skip-nix-installation: true
 
       - name: verify missing variable
         run: |
