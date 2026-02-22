@@ -1,4 +1,8 @@
 #!/bin/bash
+
+TRIVY_CONFIG=${TRIVY_CONFIG:-$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/trivy.yaml}
+TFLINT_CONFIG_FILE=${TFLINT_CONFIG_FILE:-$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl}
+
 terraform-init () {
     terraform --version
 
@@ -40,12 +44,13 @@ terraform-apply () {
 check-tfplan () {
     if [ -f tfplan ]; then
         echo "Check plan with trivy..."
-        trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-plan-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
-        trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-plan-critical-high.json --exit-code 1 --severity HIGH,CRITICAL .
+        trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-plan-medium-low.json --exit-code 0 --severity MEDIUM,LOW tfplan
+        trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-plan-critical-high.json --exit-code 1 --severity HIGH,CRITICAL tfplan
     else
         echo "No tfplan file found."
     fi
 }
+
 
 check-terraform () {
     echo "Running terraform validate..."
@@ -55,13 +60,13 @@ check-terraform () {
     terraform fmt -check -recursive -no-color
 
     echo "Check terraform files with trivy..."
-    trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-source-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
-    trivy fs --skip-version-check --scanners misconfig,secret -f json -o trivy-source-critical-high.json --exit-code 1 --severity HIGH,CRITICAL .
+    trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
+    trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-critical-high.json --exit-code 1 --severity HIGH,CRITICAL .
 
     echo "Initializing tflint..."
-    tflint --init --config "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl"
+    tflint --init --config $TFLINT_CONFIG_FILE
     echo "Check terraform files with tflint..."
-    tflint --recursive --no-color --format json --config "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl" > tflint.json 
+    tflint --recursive --no-color --format json --config $TFLINT_CONFIG_FILE > tflint.json 
     echo ""
 
     if [ -f README.md ]; then

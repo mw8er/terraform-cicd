@@ -15,7 +15,8 @@
         "{{ .Virtenv }}/apply.sh": "config/scripts/apply.sh",
         "{{ .Virtenv }}/check-quality.sh": "config/scripts/check-quality.sh",
         "{{ .Virtenv }}/test.sh": "config/scripts/test.sh",
-        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl"
+        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl",
+        "{{ .Virtenv }}/trivy.yaml": "config/trivy.yaml"
     },
     "shell": {
         "init_hook": [
