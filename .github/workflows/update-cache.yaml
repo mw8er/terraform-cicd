@@ -1,7 +1,8 @@
-name: Test devbox plugin terraform-cicd
+name: Update cache of devbox and nix for terraform-cicd plugin
 
 on:
   workflow_dispatch:
+  
   push:
     branches:
       - main
