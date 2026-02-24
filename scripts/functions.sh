@@ -1,5 +1,9 @@
 #!/bin/bash
 
+TRIVY_CONFIG=$TFCICD_CONFIG/trivy.yaml
+TFLINT_CONFIG_FILE=$TFCICD_CONFIG/.tflint.hcl
+
+
 terraform-init () {
     terraform --version
 
