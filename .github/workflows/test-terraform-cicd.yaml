@@ -37,11 +37,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: update inlcude within devbox.json
+      - name: update include within devbox.json
         shell: bash
         run: |
           set -euo pipefail
           sed -i "s|\"path:../plugin.json\"|\"${{ matrix.setup.include }}\"|g" devbox.json
+
+          cat devbox.json
 
       # - name: Install nix
       #   uses: DeterminateSystems/nix-installer-action@main  # v21
