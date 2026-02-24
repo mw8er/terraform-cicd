@@ -20,16 +20,31 @@ concurrency:
 jobs:
   test:
     strategy:
+      max-parallel: 1
+      fail-fast: true
       matrix:
-        devbox-directory:
-          - test/local
-          - test/github
+        setup:
+          - include: "path:../plugin.json"
+            name: "Test with plugin from local path"
+          - include: "github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
+            name: "Test with plugin from GitHub"
+    name: ${{ matrix.setup.name }}
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ matrix.devbox-directory }}
+        working-directory: ./test
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: update include within devbox.json
+        if: ${{ matrix.setup.include != 'path:../plugin.json' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          sed -i "s|\"path:../plugin.json\"|\"${INCLUDE}\"|g" devbox.json
+        env:
+          INCLUDE: ${{ matrix.setup.include }}
 
       - name: Install nix
         uses: DeterminateSystems/nix-installer-action@main  # v21
@@ -41,7 +56,7 @@ jobs:
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
         with:
-          project-path: ${{ matrix.devbox-directory }}
+          project-path: ./test
           enable-cache: true
           devbox-version: 0.16.0
           skip-nix-installation: true
@@ -55,40 +70,39 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: ${{ github.workspace }}/test/changes
+          WORKDIR: changes
 
       - name: verify plan with changes
         uses: ./action
         with:
-          workdir: ${{ github.workspace }}/test/changes
+          workdir: changes
           config-file: config/.env
           command: plan
-          devboxdir: ${{ matrix.devbox-directory }}
+          devboxdir: ./test
 
-      - name: verify plan with changes
+      - name: verify apply with changes
         uses: ./action
         with:
-          workdir: ${{ github.workspace }}/test/changes
+          workdir: changes
           config-file: config/.env
           command: apply
-          devboxdir: ${{ matrix.devbox-directory }}
-      
+          devboxdir: ./test
       
       - name: verify plan-and-apply with changes
         uses: ./action
         with:
-          workdir: ${{ github.workspace }}/test/changes
+          workdir: changes
           config-file: config/.env
           command: plan-and-apply
-          devboxdir: ${{ matrix.devbox-directory }}
+          devboxdir: ./test
 
       - name: verify plan without changes
         uses: ./action
         with:
-          workdir: ${{ github.workspace }}/test/nochanges
+          workdir: nochanges
           config-file: config/.env
           command: plan
-          devboxdir: ${{ matrix.devbox-directory }}
+          devboxdir: ./test
 
       - name: verify apply without changes
         run: |
@@ -100,15 +114,15 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: ${{ github.workspace }}/test/nochanges
+          WORKDIR: nochanges
 
       - name: verify plan-and-apply without changes
         uses: ./action
         with:
-          workdir: ${{ github.workspace }}/test/nochanges
+          workdir: nochanges
           config-file: config/.env
           command: plan-and-apply
-          devboxdir: ${{ matrix.devbox-directory }}
+          devboxdir: ./test
 
       - name: verify plan/apply/plan-and-apply without config
         run: |
@@ -120,7 +134,7 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: ${{ github.workspace }}/test/noconfig
+          WORKDIR: noconfig
 
       - name: verify plan without terraform config
         run: |
@@ -132,7 +146,7 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: ${{ github.workspace }}/test/noterraform
+          WORKDIR: noterraform
 
       - name: verify plan-and-apply without terraform config
         run: |
@@ -144,6 +158,6 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: ${{ github.workspace }}/test/noterraform
+          WORKDIR: noterraform
           AUTO_APPROVE: true
 

@@ -4,7 +4,7 @@
     "terraform@1.14.4"
   ],
   "include": [
-    "path:../../plugin.json"
+    "path:../plugin.json"
   ],
   "shell": {
     "init_hook": [],
