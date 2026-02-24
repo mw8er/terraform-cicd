@@ -89,7 +89,7 @@ runs:
 
     - name: Run devbox terraform ci/CD
       shell: bash
-      run: devbox run $WORKDIR/$CONFIG_FILE $COMMAND
+      run: devbox run -env-file $WORKDIR/$CONFIG_FILE $COMMAND
       working-directory: ${{ inputs.devboxdir }}
       env:
         WORKDIR: ${{ inputs.workdir }}
