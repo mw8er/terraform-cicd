@@ -57,6 +57,7 @@ jobs:
           workdir: changes
           config-file: config/.env
           command: plan
+          devboxdir: ./test
 
       - name: verify plan with changes
         run: devbox run --env-file $WORKDIR/config/.env plan
