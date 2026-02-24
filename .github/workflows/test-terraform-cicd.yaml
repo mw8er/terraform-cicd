@@ -41,9 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          echo $INCLUDE
           sed -i "s|\"path:../plugin.json\"|\"${INCLUDE}\"|g" devbox.json
 
           cat devbox.json
+          exit 1
         env:
           INCLUDE: ${{ matrix.setup.include }}
 
