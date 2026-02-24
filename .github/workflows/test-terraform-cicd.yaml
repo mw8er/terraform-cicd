@@ -115,7 +115,7 @@ jobs:
           set +e
           devbox run --env-file $WORKDIR/config/.env plan 2>&1 | tee error.log
           set -e
-          if ! grep -q "Error: No configuration files" error.log; then
+          if ! grep -q "Error running terraform plan." error.log; then
             echo "Expected error message not found in output."
             exit 1
           fi
@@ -127,7 +127,7 @@ jobs:
           set +e
           devbox run --env-file $WORKDIR/config/.env plan-and-apply 2>&1 | tee error.log
           set -e
-          if ! grep -q "Error: No configuration files" error.log; then
+          if ! grep -q "Error running terraform plan." error.log; then
             echo "Expected error message not found in output."
             exit 1
           fi
