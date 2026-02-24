@@ -23,7 +23,7 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
-        setup.include:
+        setup:
           - include: "path:../plugin.json"
             name: "Test with plugin from local path"
           - include: "github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
@@ -50,12 +50,12 @@ jobs:
         env:
           INCLUDE: ${{ matrix.setup.include }}
 
-      # - name: Install nix
-      #   uses: DeterminateSystems/nix-installer-action@main  # v21
-      #   with:
-      #     logger: pretty
-      #     extra-conf: experimental-features = ca-derivations fetch-closure
-      #     summarize: false
+      - name: Install nix
+        uses: DeterminateSystems/nix-installer-action@main  # v21
+        with:
+          logger: pretty
+          extra-conf: experimental-features = ca-derivations fetch-closure
+          summarize: false
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
@@ -63,7 +63,7 @@ jobs:
           project-path: ./test
           enable-cache: true
           devbox-version: 0.16.0
-          skip-nix-installation: false
+          skip-nix-installation: true
 
       - name: verify missing variable
         run: |
