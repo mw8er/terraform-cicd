@@ -1,0 +1,36 @@
+name: Test devbox plugin terraform-cicd
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'test/devbox.json'
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update-cache:
+    name: Update cache for devbox plugin terraform-cicd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Install nix
+        uses: DeterminateSystems/nix-installer-action@main  # v21
+        with:
+          logger: pretty
+          extra-conf: experimental-features = ca-derivations fetch-closure
+          summarize: false
+
+      - name: Install devbox
+        uses: jetify-com/devbox-install-action@v0.14.0
+        with:
+          project-path: ./test
+          enable-cache: true
+          devbox-version: 0.16.0
+          skip-nix-installation: true
