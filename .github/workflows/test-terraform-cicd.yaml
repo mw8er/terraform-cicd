@@ -24,9 +24,9 @@ jobs:
       fail-fast: true
       matrix:
         setup.include:
-          - include: path:../plugin.json
+          - include: "path:../plugin.json"
             name: "Test with plugin from local path"
-          - include: github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}
+          - include: "github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}"
             name: "Test with plugin from GitHub"
     name: ${{ matrix.setup.name }}
     runs-on: ubuntu-latest
