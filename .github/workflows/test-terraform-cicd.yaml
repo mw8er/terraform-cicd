@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          echo $INCLUDE
+          echo "INCLUDE: $INCLUDE"
           sed -i "s|\"path:../plugin.json\"|\"${INCLUDE}\"|g" devbox.json
 
           cat devbox.json
