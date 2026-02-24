@@ -47,10 +47,10 @@ runs:
           echo "Error: invalid characters in '$WORKDIR'" >&2
           exit 1
         fi
-        # if [[ "$WORKDIR" == /* || "$WORKDIR" == *".."* ]]; then
-        #   echo "Error: unsafe path '$WORKDIR'" >&2
-        #   exit 1
-        # fi
+        if [[ "$WORKDIR" == /* || "$WORKDIR" == *".."* ]]; then
+          echo "Error: unsafe path '$WORKDIR'" >&2
+          exit 1
+        fi
       env:
         WORKDIR: ${{ inputs.workdir }}
 

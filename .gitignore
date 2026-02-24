@@ -52,6 +52,6 @@ test/*/trivy-*.json
 test/*/tflint.json
 test/*/source.json
 
-test/*/.devbox
-test/*/devbox.d
-test/*/devbox.lock
+test/.devbox
+test/devbox.d
+test/devbox.lock
