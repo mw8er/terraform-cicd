@@ -23,9 +23,12 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
-        include-plugin:
-          - path:../plugin.json
-          - github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}
+        setup.include:
+          - include: path:../plugin.json
+            name: "Test with plugin from local path"
+          - include: github:${{ github.repository }}/${{ github.head_ref || github.ref_name }}
+            name: "Test with plugin from GitHub"
+    name: ${{ matrix.setup.name }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -38,7 +41,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sed -i "s|\"path:../plugin.json\"|\"${{ matrix.include-plugin }}\"|g" devbox.json
+          sed -i "s|\"path:../plugin.json\"|\"${{ matrix.setup.include }}\"|g" devbox.json
 
       - name: Install nix
         uses: DeterminateSystems/nix-installer-action@main  # v21
