@@ -52,25 +52,37 @@ jobs:
           WORKDIR: changes
 
       - name: verify plan with changes
-        run: devbox run --env-file $WORKDIR/config/.env plan
-        env:
-          WORKDIR: changes
+        uses: ./action
+        with:
+          workdir: changes
+          config-file: config/.env
+          command: plan
+          devboxdir: ./test
+
+      - name: verify plan with changes
+        uses: ./action
+        with:
+          workdir: changes
+          config-file: config/.env
+          command: apply
+          devboxdir: ./test
       
-      - name: verify apply with changes
-        run: devbox run --env-file $WORKDIR/config/.env apply
-        env:
-          WORKDIR: changes
       
       - name: verify plan-and-apply with changes
-        run: devbox run --env-file $WORKDIR/config/.env plan-and-apply
-        env:
-          WORKDIR: changes
-          AUTO_APPROVE: true
+        uses: ./action
+        with:
+          workdir: changes
+          config-file: config/.env
+          command: plan-and-apply
+          devboxdir: ./test
 
       - name: verify plan without changes
-        run: devbox run --env-file $WORKDIR/config/.env plan
-        env:
-          WORKDIR: nochanges
+        uses: ./action
+        with:
+          workdir: nochanges
+          config-file: config/.env
+          command: plan
+          devboxdir: ./test
 
       - name: verify apply without changes
         run: |
@@ -85,10 +97,12 @@ jobs:
           WORKDIR: nochanges
 
       - name: verify plan-and-apply without changes
-        run: devbox run --env-file $WORKDIR/config/.env plan-and-apply
-        env:
-          WORKDIR: nochanges
-          AUTO_APPROVE: true
+        uses: ./action
+        with:
+          workdir: nochanges
+          config-file: config/.env
+          command: plan-and-apply
+          devboxdir: ./test
 
       - name: verify plan/apply/plan-and-apply without config
         run: |
@@ -107,7 +121,7 @@ jobs:
           set +e
           devbox run --env-file $WORKDIR/config/.env plan 2>&1 | tee error.log
           set -e
-          if ! grep -q "Error: No configuration files" error.log; then
+          if ! grep -q "Error running terraform plan." error.log; then
             echo "Expected error message not found in output."
             exit 1
           fi
@@ -119,7 +133,7 @@ jobs:
           set +e
           devbox run --env-file $WORKDIR/config/.env plan-and-apply 2>&1 | tee error.log
           set -e
-          if ! grep -q "Error: No configuration files" error.log; then
+          if ! grep -q "Error running terraform plan." error.log; then
             echo "Expected error message not found in output."
             exit 1
           fi
