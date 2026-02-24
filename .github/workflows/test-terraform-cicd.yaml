@@ -43,12 +43,12 @@ jobs:
           set -euo pipefail
           sed -i "s|\"path:../plugin.json\"|\"${{ matrix.setup.include }}\"|g" devbox.json
 
-      - name: Install nix
-        uses: DeterminateSystems/nix-installer-action@main  # v21
-        with:
-          logger: pretty
-          extra-conf: experimental-features = ca-derivations fetch-closure
-          summarize: false
+      # - name: Install nix
+      #   uses: DeterminateSystems/nix-installer-action@main  # v21
+      #   with:
+      #     logger: pretty
+      #     extra-conf: experimental-features = ca-derivations fetch-closure
+      #     summarize: false
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
@@ -56,7 +56,7 @@ jobs:
           project-path: ./test
           enable-cache: true
           devbox-version: 0.16.0
-          skip-nix-installation: true
+          skip-nix-installation: false
 
       - name: verify missing variable
         run: |
