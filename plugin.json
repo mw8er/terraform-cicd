@@ -7,37 +7,40 @@
         "terraform-docs@latest",
         "tflint@latest"
     ],
-    "env": {},
+    "env": {
+      "TFCICD_SCRIPTS": "{{.Virtenv}}",
+      "TFCICD_CONFIG": "{{.DevboxDir}}"
+    },
     "create_files": {
-        "{{ .Virtenv }}/functions.sh": "config/scripts/functions.sh",
-        "{{ .Virtenv }}/plan-and-apply.sh": "config/scripts/plan-and-apply.sh",
-        "{{ .Virtenv }}/plan.sh": "config/scripts/plan.sh",
-        "{{ .Virtenv }}/apply.sh": "config/scripts/apply.sh",
-        "{{ .Virtenv }}/check-quality.sh": "config/scripts/check-quality.sh",
-        "{{ .Virtenv }}/test.sh": "config/scripts/test.sh",
-        "{{ .Virtenv }}/.tflint.hcl": "config/.tflint.hcl",
-        "{{ .Virtenv }}/trivy.yaml": "config/trivy.yaml"
+        "{{ .Virtenv }}/functions.sh": "scripts/functions.sh",
+        "{{ .Virtenv }}/plan-and-apply.sh": "scripts/plan-and-apply.sh",
+        "{{ .Virtenv }}/plan.sh": "scripts/plan.sh",
+        "{{ .Virtenv }}/apply.sh": "scripts/apply.sh",
+        "{{ .Virtenv }}/check-quality.sh": "scripts/check-quality.sh",
+        "{{ .Virtenv }}/test.sh": "scripts/test.sh",
+        "{{ .DevboxDir }}/.tflint.hcl": "config/.tflint.hcl",
+        "{{ .DevboxDir }}/trivy.yaml": "config/trivy.yaml"
     },
     "shell": {
         "init_hook": [
             "echo 'Welcome to devbox plugin terraform-cicd!'",
-            "chmod +x $DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/*.sh"
+            "chmod +x $TFCICD_SCRIPTS/*.sh"
         ],
         "scripts": {
             "plan-and-apply": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/plan-and-apply.sh \"$@\""
+                "$TFCICD_SCRIPTS/plan-and-apply.sh \"$@\""
             ],
             "plan": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/plan.sh \"$@\""
+                "$TFCICD_SCRIPTS/plan.sh \"$@\""
             ],
             "apply": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/apply.sh \"$@\""
+                "$TFCICD_SCRIPTS/apply.sh \"$@\""
             ],
             "check-quality": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/check-quality.sh \"$@\""
+                "$TFCICD_SCRIPTS/check-quality.sh \"$@\""
             ],
             "test": [
-                "$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/test.sh \"$@\""
+                "$TFCICD_SCRIPTS/test.sh \"$@\""
             ]
         }
     },

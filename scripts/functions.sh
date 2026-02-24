@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TRIVY_CONFIG=${TRIVY_CONFIG:-$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/trivy.yaml}
-TFLINT_CONFIG_FILE=${TFLINT_CONFIG_FILE:-$DEVBOX_PROJECT_ROOT/.devbox/virtenv/terraform-cicd/.tflint.hcl}
+TRIVY_CONFIG=${TRIVY_CONFIG:-$TFCICD_CONFIG/trivy.yaml}
+TFLINT_CONFIG_FILE=${TFLINT_CONFIG_FILE:-$TFCICD_CONFIG/.tflint.hcl}
 
 terraform-init () {
     terraform --version
