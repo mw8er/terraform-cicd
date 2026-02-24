@@ -15,21 +15,21 @@ devbox run --env-file $WORKDIR/config/.env plan-and-apply
 ```
 
 ```bash
-export WORKDIR="nochanges"
+export WORKDIR="../nochanges"
 devbox run --env-file $WORKDIR/config/.env plan
 devbox run --env-file $WORKDIR/config/.env apply
 devbox run --env-file $WORKDIR/config/.env plan-and-apply
 ```
 
 ```bash
-export WORKDIR="noconfig"
+export WORKDIR="../noconfig"
 devbox run --env-file $WORKDIR/config/.env plan
 # devbox run --env-file $WORKDIR/config/.env apply
 # devbox run --env-file $WORKDIR/config/.env plan-and-apply
 ```
 
 ```bash
-export WORKDIR="noterraform"
+export WORKDIR="../noterraform"
 devbox run --env-file $WORKDIR/config/.env plan
 # devbox run --env-file $WORKDIR/config/.env apply
 devbox run --env-file $WORKDIR/config/.env plan-and-apply
@@ -38,6 +38,6 @@ devbox run --env-file $WORKDIR/config/.env plan-and-apply
 ## code quality
 
 ```bash
-export WORKDIR="badformat"
+export WORKDIR="../badformat"
 devbox run check-quality
 ```

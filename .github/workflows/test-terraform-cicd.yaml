@@ -9,6 +9,7 @@ on:
     paths:
       - 'plugin.json'
       - 'config/**'
+      - 'scripts/**'
       - 'test/**'
       - '.github/workflows/test-terraform-cicd.yaml'
 
@@ -18,10 +19,15 @@ concurrency:
 
 jobs:
   test:
+    strategy:
+      matrix:
+        devbox-directory:
+          - test/local
+          - test/github
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: test
+        working-directory: ${{ matrix.devbox-directory }}
     steps:
       - uses: actions/checkout@v6
 
@@ -35,7 +41,7 @@ jobs:
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.14.0
         with:
-          project-path: test
+          project-path: ${{ matrix.devbox-directory }}
           enable-cache: true
           devbox-version: 0.16.0
           skip-nix-installation: true
@@ -49,40 +55,40 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: changes
+          WORKDIR: ${{ github.workspace }}/test/changes
 
       - name: verify plan with changes
         uses: ./action
         with:
-          workdir: changes
+          workdir: ${{ github.workspace }}/test/changes
           config-file: config/.env
           command: plan
-          devboxdir: ./test
+          devboxdir: ${{ matrix.devbox-directory }}
 
       - name: verify plan with changes
         uses: ./action
         with:
-          workdir: changes
+          workdir: ${{ github.workspace }}/test/changes
           config-file: config/.env
           command: apply
-          devboxdir: ./test
+          devboxdir: ${{ matrix.devbox-directory }}
       
       
       - name: verify plan-and-apply with changes
         uses: ./action
         with:
-          workdir: changes
+          workdir: ${{ github.workspace }}/test/changes
           config-file: config/.env
           command: plan-and-apply
-          devboxdir: ./test
+          devboxdir: ${{ matrix.devbox-directory }}
 
       - name: verify plan without changes
         uses: ./action
         with:
-          workdir: nochanges
+          workdir: ${{ github.workspace }}/test/nochanges
           config-file: config/.env
           command: plan
-          devboxdir: ./test
+          devboxdir: ${{ matrix.devbox-directory }}
 
       - name: verify apply without changes
         run: |
@@ -94,15 +100,15 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: nochanges
+          WORKDIR: ${{ github.workspace }}/test/nochanges
 
       - name: verify plan-and-apply without changes
         uses: ./action
         with:
-          workdir: nochanges
+          workdir: ${{ github.workspace }}/test/nochanges
           config-file: config/.env
           command: plan-and-apply
-          devboxdir: ./test
+          devboxdir: ${{ matrix.devbox-directory }}
 
       - name: verify plan/apply/plan-and-apply without config
         run: |
@@ -114,7 +120,7 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: noconfig
+          WORKDIR: ${{ github.workspace }}/test/noconfig
 
       - name: verify plan without terraform config
         run: |
@@ -126,7 +132,7 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: noterraform
+          WORKDIR: ${{ github.workspace }}/test/noterraform
 
       - name: verify plan-and-apply without terraform config
         run: |
@@ -138,6 +144,6 @@ jobs:
             exit 1
           fi
         env:
-          WORKDIR: noterraform
+          WORKDIR: ${{ github.workspace }}/test/noterraform
           AUTO_APPROVE: true
 
