@@ -10,6 +10,10 @@ inputs:
   command:
     description: 'The command that should be used for `devbox run`.'
     required: true
+  devboxdir:
+    description: 'The directory to find `devbox.json`.'
+    required: false
+    default: .
   install-devbox:
     description: 'Pass `true` in case this action should install devbox'
     required: false
@@ -86,6 +90,7 @@ runs:
     - name: Run devbox terraform ci/CD
       shell: bash
       run: devbox run $WORKDIR/$CONFIG_FILE $COMMAND
+      working-directory: ${{ inputs.devboxdir }}
       env:
         WORKDIR: ${{ inputs.workdir }}
         CONFIG_FILE: ${{ inputs.config-file }}
