@@ -1,0 +1,92 @@
+name: 'Terraform CI/CD'
+description: 'Perform terraform CI/CD task'
+inputs:
+  workdir:  
+    description: 'Use as environment variable WORKDIR for ` devbox run`.'
+    required: true
+  config-file:
+    description: 'The config-file for `devbox run` with respect to `workdir` from above.'
+    required: true
+  command:
+    description: 'The command that should be used for `devbox run`.'
+    required: true
+  install-devbox:
+    description: 'Pass `true` in case this action should install devbox'
+    required: false
+    default: false
+runs:
+  using: "composite"
+  steps:
+    - name: Validate input `command`
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        allowed=$'plan\napply\nplan-and-apply\ncheck-quality\nvalidate'
+
+        if grep -Fxq -- "$COMMAND" <<<"$allowed"; then
+          echo "OK: '$COMMAND' is allowed"
+        else
+          echo "Error: invalid input '$COMMAND'. Allowed values are:" >&2
+          printf '%s\n' "$allowed" >&2
+          exit 1
+        fi
+      env:
+        COMMAND: ${{ inputs.command }}
+
+    - name: Validate input `workdir`
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if [[ ! "$WORKDIR" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+          echo "Error: invalid characters in '$WORKDIR'" >&2
+          exit 1
+        fi
+        if [[ "$WORKDIR" == /* || "$WORKDIR" == *".."* ]]; then
+          echo "Error: unsafe path '$WORKDIR'" >&2
+          exit 1
+        fi
+      env:
+        WORKDIR: ${{ inputs.workdir }}
+
+    - name: Validate input `config-file`
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        if [[ ! "$CONFIG_FILE" =~ ^[A-Za-z0-9._/-]+$ ]]; then
+          echo "Error: invalid characters in '$CONFIG_FILE'" >&2
+          exit 1
+        fi
+        if [[ "$CONFIG_FILE" == /* || "$CONFIG_FILE" == *".."* ]]; then
+          echo "Error: unsafe path '$CONFIG_FILE'" >&2
+          exit 1
+        fi
+      env:
+        CONFIG_FILE: ${{ inputs.config-file }}
+    
+    - name: Install nix
+      if: ${{ inputs.install-devbox == 'true' }}
+      uses: DeterminateSystems/nix-installer-action@main  # v21
+      with:
+        logger: pretty
+        extra-conf: experimental-features = ca-derivations fetch-closure
+        summarize: false
+
+    - name: Install devbox
+      if: ${{ inputs.install-devbox == 'true' }}
+      uses: jetify-com/devbox-install-action@v0.14.0
+      with:
+        project-path: test
+        enable-cache: true
+        devbox-version: 0.16.0
+        skip-nix-installation: true
+
+    - name: Run devbox terraform ci/CD
+      shell: bash
+      run: devbox run $WORKDIR/$CONFIG_FILE $COMMAND
+      env:
+        WORKDIR: ${{ inputs.workdir }}
+        CONFIG_FILE: ${{ inputs.config-file }}
+        COMMAND: ${{ inputs.command }}
