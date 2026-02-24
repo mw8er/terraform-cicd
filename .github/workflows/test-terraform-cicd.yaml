@@ -41,9 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          sed -i "s|\"path:../plugin.json\"|\"${{ matrix.setup.include }}\"|g" devbox.json
+          sed -i "s|\"path:../plugin.json\"|\"${INCLUDE}\"|g" devbox.json
 
           cat devbox.json
+        env:
+          INCLUDE: ${{ matrix.setup.include }}
 
       # - name: Install nix
       #   uses: DeterminateSystems/nix-installer-action@main  # v21
