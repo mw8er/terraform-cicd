@@ -57,8 +57,8 @@ check-terraform () {
     echo "Running terraform validate..."
     terraform validate
 
-    USE_EXIT_CODE=1
-    USE_FORCE=""
+    local USE_EXIT_CODE=1
+    local USE_FORCE=""
 
     echo "Check format..."
     local INTERACTIVE=${GITHUB_STATE:-interactive}
