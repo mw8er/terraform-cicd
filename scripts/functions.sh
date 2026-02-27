@@ -132,16 +132,11 @@ plan-and-apply () {
     set -e
 
     if [ -f tfplan ]; then
-        local AUTO_APPROVE=${AUTO_APPROVE:-false}
-        local RESPONSE="no"
-        if [[ "$AUTO_APPROVE" == "false" ]]; then
-            if [ -t 0 ]; then
-                read -p "Apply Terraform Plan? (yes/no): " -r RESPONSE
-            else
-                echo "Non-interactive environment detected and AUTO_APPROVE is false; skipping apply." >&2
-            fi
+        approve="yes"
+        if [ -t 0 ]; then
+            read -p "Apply Terraform Plan? (yes/no): " -r approve
         fi
-        if [[ "$AUTO_APPROVE" == "true" ]] || [[ "$RESPONSE" == "yes" ]]; then
+        if [[ "$approve" == "yes" ]]; then
             echo "Applying Terraform Plan..."
             terraform-apply
         else
