@@ -159,5 +159,75 @@ jobs:
           fi
         env:
           WORKDIR: noterraform
-          AUTO_APPROVE: true
 
+      - name: verify plan-and-apply without terraform config
+        run: |
+          set +e
+          devbox run --env-file $WORKDIR/config/.env plan-and-apply 2>&1 | tee error.log
+          set -e
+          if ! grep -q "Error running terraform plan." error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: noterraform
+
+      - name: verify check-quality with bad validate
+        run: |
+          set +e
+          devbox run check-quality 2>&1 | tee error.log
+          set -e
+          if ! grep -q "can only consist of lowercase letters and numbers, and must be between 3 and 24 characters long" error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: badvalidate
+
+      - name: verify check-quality with bad format
+        run: |
+          set +e
+          devbox run check-quality 2>&1 | tee error.log
+          set -e
+          if ! grep -q "Error: error running script \"check-quality\" in Devbox: exit status 3" error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: badformat
+
+      - name: verify check-quality with bad trivy
+        run: |
+          set +e
+          devbox run check-quality 2>&1 | tee error.log
+          set -e
+          if ! grep -q "Error: error running script \"check-quality\" in Devbox: exit status 2" error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: badtrivy
+
+      - name: verify check-quality with bad tflint
+        run: |
+          set +e
+          devbox run check-quality 2>&1 | tee error.log
+          set -e
+          if ! grep -q "Error: error running script \"check-quality\" in Devbox: exit status 2" error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: badtflint
+
+      - name: verify check-quality with bad readme
+        run: |
+          set +e
+          devbox run check-quality 2>&1 | tee error.log
+          set -e
+          if ! grep -q "Error: README.md is out of date" error.log; then
+            echo "Expected error message not found in output."
+            exit 1
+          fi
+        env:
+          WORKDIR: badreadme
