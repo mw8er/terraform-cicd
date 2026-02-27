@@ -84,7 +84,11 @@ check-terraform () {
 
     if [ -f README.md ]; then
         echo "Running terraform-docs..."
-        terraform-docs markdown table --output-file README.md --output-mode inject .
+        if [ "$INTERACTIVE" == "interactive" ]; then
+            terraform-docs markdown table --output-file README.md --output-mode inject .
+        else
+            terraform-docs markdown table --output-file README.md --output-mode inject --output-check .
+        fi
     else
         echo "README.md does not exist, skipping terraform-docs."
     fi
