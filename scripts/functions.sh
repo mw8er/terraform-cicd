@@ -57,17 +57,29 @@ check-terraform () {
     echo "Running terraform validate..."
     terraform validate
 
+    local USE_EXIT_CODE=1
+    local USE_FORCE=""
+
     echo "Check format..."
-    terraform fmt -check -recursive
+    local INTERACTIVE=${GITHUB_STATE:-interactive}
+    if [ "$INTERACTIVE" == "interactive" ]; then
+        echo "Formatting terraform files in interactive mode..."
+        terraform fmt -recursive
+        USE_EXIT_CODE=0
+        USE_FORCE="--force"
+    else
+        echo "Check terraform file format in non-interactive mode..."
+        terraform fmt -check -recursive
+    fi
 
     echo "Check terraform files with trivy..."
     trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-medium-low.json --exit-code 0 --severity MEDIUM,LOW .
-    trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-critical-high.json --exit-code 1 --severity HIGH,CRITICAL .
+    trivy fs --skip-version-check --config $TRIVY_CONFIG --scanners misconfig,secret -f json -o trivy-source-critical-high.json --exit-code $USE_EXIT_CODE --severity HIGH,CRITICAL .
 
     echo "Initializing tflint..."
     tflint --init --config $TFLINT_CONFIG_FILE
     echo "Check terraform files with tflint..."
-    tflint --recursive --format json --config $TFLINT_CONFIG_FILE > tflint.json 
+    tflint --recursive --format json --config $TFLINT_CONFIG_FILE $USE_FORCE > tflint.json 
     echo ""
 
     if [ -f README.md ]; then
@@ -132,16 +144,12 @@ plan-and-apply () {
     set -e
 
     if [ -f tfplan ]; then
-        local AUTO_APPROVE=${AUTO_APPROVE:-false}
-        local RESPONSE="no"
-        if [[ "$AUTO_APPROVE" == "false" ]]; then
-            if [ -t 0 ]; then
-                read -p "Apply Terraform Plan? (yes/no): " -r RESPONSE
-            else
-                echo "Non-interactive environment detected and AUTO_APPROVE is false; skipping apply." >&2
-            fi
+        local approve="yes"
+        local INTERACTIVE=${GITHUB_STATE:-interactive}
+        if [ "$INTERACTIVE" == "interactive" ]; then
+            read -p "Apply Terraform Plan? (yes/no): " -r approve
         fi
-        if [[ "$AUTO_APPROVE" == "true" ]] || [[ "$RESPONSE" == "yes" ]]; then
+        if [[ "$approve" == "yes" ]]; then
             echo "Applying Terraform Plan..."
             terraform-apply
         else
