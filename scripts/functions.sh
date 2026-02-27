@@ -144,7 +144,7 @@ plan-and-apply () {
     set -e
 
     if [ -f tfplan ]; then
-        approve="yes"
+        local approve="yes"
         local INTERACTIVE=${GITHUB_STATE:-interactive}
         if [ "$INTERACTIVE" == "interactive" ]; then
             read -p "Apply Terraform Plan? (yes/no): " -r approve
