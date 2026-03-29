@@ -46,12 +46,12 @@ jobs:
         env:
           INCLUDE: ${{ matrix.setup.include }}
 
-      - name: Install nix
-        uses: DeterminateSystems/nix-installer-action@main  # v21
-        with:
-          logger: pretty
-          extra-conf: experimental-features = ca-derivations fetch-closure
-          summarize: false
+      # - name: Install nix
+      #   uses: DeterminateSystems/nix-installer-action@main  # v21
+      #   with:
+      #     logger: pretty
+      #     extra-conf: experimental-features = ca-derivations fetch-closure
+      #     summarize: false
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.15.0
@@ -59,7 +59,7 @@ jobs:
           project-path: ./test
           enable-cache: true
           devbox-version: 0.16.0
-          skip-nix-installation: true
+          # skip-nix-installation: true
 
       - name: verify missing variable
         run: |
