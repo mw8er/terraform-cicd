@@ -21,12 +21,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Install nix
-        uses: DeterminateSystems/nix-installer-action@main  # v21
-        with:
-          logger: pretty
-          extra-conf: experimental-features = ca-derivations fetch-closure
-          summarize: false
+      # - name: Install nix
+      #   uses: DeterminateSystems/nix-installer-action@main  # v21
+      #   with:
+      #     logger: pretty
+      #     extra-conf: experimental-features = ca-derivations fetch-closure
+      #     summarize: false
 
       - name: Install devbox
         uses: jetify-com/devbox-install-action@v0.15.0
@@ -34,4 +34,4 @@ jobs:
           project-path: ./test
           enable-cache: true
           devbox-version: 0.16.0
-          skip-nix-installation: true
+          # skip-nix-installation: true
