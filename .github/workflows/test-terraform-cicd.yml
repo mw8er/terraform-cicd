@@ -54,12 +54,7 @@ jobs:
       #     summarize: false
 
       - name: Install devbox
-        uses: jetify-com/devbox-install-action@8c6a66ed6273138b1915457069de78cb52fe3bd7 #v0.15.0
-        with:
-          project-path: ./test
-          enable-cache: true
-          devbox-version: 0.17.2
-          sha256-checksum: 163798986bbe2a246e36be35a3c3d6c4df5e048969b399847592704f4f3fa95c
+        uses: ./.github/actions/install-devbox
 
       - name: verify missing variable
         run: |
