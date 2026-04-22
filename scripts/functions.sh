@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TRIVY_CONFIG=$TFCICD_CONFIG/trivy.yaml
+TRIVY_CONFIG=$TFCICD_CONFIG/trivy.yml
 TFLINT_CONFIG_FILE=$TFCICD_CONFIG/.tflint.hcl
 
 

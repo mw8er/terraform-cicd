@@ -11,7 +11,7 @@ on:
       - 'config/**'
       - 'scripts/**'
       - 'test/**'
-      - '.github/workflows/test-terraform-cicd.yaml'
+      - '.github/workflows/test-terraform-cicd.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -46,20 +46,19 @@ jobs:
         env:
           INCLUDE: ${{ matrix.setup.include }}
 
-      # - name: Install nix
-      #   uses: DeterminateSystems/nix-installer-action@main  # v21
-      #   with:
-      #     logger: pretty
-      #     extra-conf: experimental-features = ca-derivations fetch-closure
-      #     summarize: false
+      # - name: Install nix
+      #   uses: DeterminateSystems/nix-installer-action@main  # v21
+      #   with:
+      #     logger: pretty
+      #     extra-conf: experimental-features = ca-derivations fetch-closure
+      #     summarize: false
 
       - name: Install devbox
-        uses: jetify-com/devbox-install-action@v0.15.0
+        uses: jetify-com/devbox-install-action@8c6a66ed6273138b1915457069de78cb52fe3bd7 #v0.15.0
         with:
           project-path: ./test
           enable-cache: true
-          devbox-version: 0.16.0
-          # skip-nix-installation: true
+          devbox-version: 0.17.2
 
       - name: verify missing variable
         run: |

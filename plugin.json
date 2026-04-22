@@ -19,7 +19,7 @@
         "{{ .Virtenv }}/check-quality.sh": "scripts/check-quality.sh",
         "{{ .Virtenv }}/test.sh": "scripts/test.sh",
         "{{ .DevboxDir }}/.tflint.hcl": "config/.tflint.hcl",
-        "{{ .DevboxDir }}/trivy.yaml": "config/trivy.yaml"
+        "{{ .DevboxDir }}/trivy.yml": "config/trivy.yml"
     },
     "shell": {
         "init_hook": [
