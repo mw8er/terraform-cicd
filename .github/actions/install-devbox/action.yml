@@ -9,5 +9,5 @@ runs:
       with:
         project-path: ./test
         enable-cache: true
-        devbox-version: 0.17.2
-        sha256-checksum: 163798986bbe2a246e36be35a3c3d6c4df5e048969b399847592704f4f3fa95c # devbox_0.17.2_linux_amd64.tar.gz
+        devbox-version: 0.17.5
+        sha256-checksum: 520abeaca5fb8e8175bea2acdaac4109e87768ac25ad8da5ad2e6eace5a6060b # devbox_0.17.5_linux_amd64.tar.gz
